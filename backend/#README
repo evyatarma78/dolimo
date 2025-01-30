@@ -1,0 +1,72 @@
+# Document Management System
+
+A full-stack application for managing customer documents with React frontend and Node.js backend.
+
+## Project Structure
+
+## Features
+
+- Real-time document management system
+- Customer data synchronization
+- Document listing with filtering
+- Responsive table interface
+- Error handling and loading states
+
+## Backend
+
+### API Endpoints
+
+- `GET /api/documents` - Retrieve all documents
+- `GET /api/customerData` - Retrieve customer information
+
+### Database Models
+
+#### Customer
+- `customer_id` (Primary Key)
+- `full_name`
+- Timestamps
+
+#### Document
+- `document_number` (Primary Key)
+- `document_date`
+- `customer_id`
+- `document_total`
+- `document_type_name`
+- `is_canceled`
+
+### Data Synchronization
+
+The backend automatically syncs with the external API every 5 minutes to:
+1. Fetch customer data
+2. Update document records
+3. Maintain data consistency
+
+## Frontend
+
+### Components
+
+#### DocumentTable
+- Displays documents in a sortable table
+- Shows loading states
+- Handles error scenarios
+- Formats dates and currency values
+- Status indicators for canceled documents
+
+### Features
+
+- RTL (Right-to-Left) support
+- Responsive design using Tailwind CSS
+- React Query for data fetching
+- TypeScript for type safety
+
+## Setup
+
+1. Install dependencies:
+```bash
+# Backend
+cd backend
+npm install
+
+# Frontend
+cd frontend
+npm install
