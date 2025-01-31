@@ -1,62 +1,53 @@
 const axios = require('axios');
-require('dotenv').config();
 
-async function getCustomerData(req, res) {
+const BASE_API_URL = 'https://api.rivhit.co.il/online/RivhitOnlineAPI.svc';
+const API_TOKEN = 'decd03e5-e35c-41e8-84f7-fba2fb483928';
+
+/**
+ * Fetch customer data from the Rivhit API
+ * @param {number} customerId - The customer ID to fetch
+ * @returns {Promise<Object>} - The API response data
+ */
+const fetchCustomerData = async (customerId) => {
   try {
-    // Make the request to the API
-     const requestBody1 = {
-        api_token: process.env.API_TOKEN,
-        "filter_fields": [
-          {
-            "filter_field": "customer_id",
-            "filter_value": "12"
-          
-          }]
-      };
-      const requestBody2 = {
-        api_token: API_TOKEN,
-        "filter_fields": [
-          {
-            "filter_field": "customer_id",
-            "filter_value": "70"
-          
-          }]
-      };
-  
-      const response = await axios.post(`${BASE_API_URL}/Customer.List`, requestBody1, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${process.env.API_TOKEN}`,
-          
-        },
-      });
-      const response2 = await axios.post(`${process.env.BASE_API_URL}/Customer.List`, requestBody2, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${process.env.API_TOKEN}`,
-          
-        },
-      });
-      const all_Customers = JSON.stringify(response.data);
-      const specific_Customers = JSON.stringify(response2.data);
-      
-      
-      // Log the data to inspect its structure
-      console.log('All Customers:',all_Customers);
-      console.log('Specific Customers:',specific_Customers);
-    // Send the response data back to the client
-    res.status(200).json({
-      response1: response.data,
-      response2: response2.data,
+    const requestBody = {
+      api_token: API_TOKEN,
+      filter_fields: [{ filter_field: 'customer_id', filter_value: customerId.toString() }],
+    };
+
+    const { data } = await axios.post(`${BASE_API_URL}/Customer.List`, requestBody, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${API_TOKEN}`,
+      },
     });
-    
-      
-      // Respond with the fetched customer data
+
+    return data;
   } catch (error) {
-    console.error('Error fetching customer data:', error);
-    // Send an error response to the client
-    res.status(500).json({ error: 'Failed to fetch customer data' });
+    console.error(`Error fetching data for customer ID ${customerId}:`, error.message);
+    throw new Error('Failed to fetch customer data');
   }
-}
+};
+
+/**
+ * Express handler to fetch customer data
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ */
+const getCustomerData = async (req, res) => {
+  try {
+    const customerIds = [12, 70]; // List of customer IDs to fetch
+    const customerData = await Promise.all(customerIds.map(fetchCustomerData));
+
+    console.log('Customer Data:', customerData);
+
+    res.status(200).json({
+      customers: customerData,
+    });
+  } catch (error) {
+    console.error('Error in getCustomerData:', error.message);
+    res.status(500).json({ error: 'Failed to retrieve customer data' });
+  }
+};
 
 module.exports = { getCustomerData };

@@ -1,4 +1,3 @@
-const { Sequelize } = require('sequelize');  
 const { Document } = require('../models/document');
 
 const getAllDocuments = async (req, res) => {

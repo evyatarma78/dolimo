@@ -29,6 +29,7 @@ app.use(
 
 // Routes
 app.use("/api", documentRoutes);
+//app.use("/api", documentRoutes);
 
 // Health Check Endpoint
 app.get("/health", (req, res) => {
@@ -183,3 +184,5 @@ sequelize
     log(`Server initialization failed: ${err.message}`, "error");
     process.exit(1);
   });
+
+// Run the server with the following command:
